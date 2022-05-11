@@ -1,8 +1,20 @@
+:root {
+  --dark-color:  rgb(23, 112, 124);
+  --medium-color: rgb(90, 208, 223);
+  --light-color: rgb(197, 248, 255);
+}
+
+:root.darkMode {
+  --light-color:  rgb(23, 112, 124);
+  --medium-color: rgb(90, 208, 223);
+  --dark-color: rgb(197, 248, 255);
+}
+
 h1,
 h2,
 footer,
 .navItem {
-  color: rgb(23, 112, 124);
+  color: var(--dark-color);
 }
 
 h1,
@@ -19,7 +31,7 @@ form input {
 }
 
 footer {
-  border-top: 0.2em solid rgb(23, 112, 124);
+  border-top: 0.2em solid var(--dark-color);
   padding: 0.5em;
   clear: both;
 }
@@ -28,21 +40,36 @@ footer {
   margin: 0.2em;
   padding: 0.5em;
   text-decoration: none;
+  color:rgb(255, 255, 255)
 }
 
 a.navItem {
   background-color: rgba(197, 248, 255, 0.5);
+  color: var(--dark-color);
+}
+
+a.navItem:hover {
+  color:rgb(255, 255, 255);
 }
 
 .freezerItem {
   width: 7em;
   height: 7em;
-  background: rgb(90, 208, 223);
+  background: var(--medium-color);
   padding: 1em;
-  border: 0.2em solid rgb(23, 112, 124);
+  border: 0.2em solid var(--dark-color);
   border-radius: 1em;
   margin: 0.3em;
   float: left;
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: left 0.05s, top 0.05s ease;
+}
+
+.freezerItem:hover {
+  left: -0.2em;
+  top: -0.2em;
 }
 
 .freezerItem img {
@@ -55,22 +82,36 @@ a.navItem {
 }
 
 #menu {
-  border: solid rgb(23, 112, 124);
+  border: solid var(--dark-color);
   border-width: 0.2em 0em;
-  background: rgb(90, 208, 223);
+  background: var(--medium-color);
   padding: 0.5em;
 }
 
 body {
-  background: rgb(197, 248, 255);
+  background: var(--light-color);
   font-family: Verdana, sans-serif;
 }
 
 button {
-  background-color: rgb(23, 112, 124);
-  color: rgb(197, 248, 255);
+  background-color: var(--dark-color);
+  color: var(--light-color);
   margin: 1em;
   border-radius: 1em;
   padding: 0.5em;
   border: 0em;
+}
+
+a:visited .freezerItem {
+  color: black;
+}
+
+body::before {
+  content: "❄";
+  font-size: 50vw;
+  position: absolute;
+  z-index: -1;
+  top: 50%; left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  color: rgba(255,255,255,0.5);
 }
