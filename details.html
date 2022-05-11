@@ -4,25 +4,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gefrierschrank</title>
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <header>
         <h1>Mein Gefrierschrank</h1>
-        <nav><a href="./index.html">Inhalt</a><a href="./form.html">Neues Item</a></nav>
+        <nav id="menu"><a class="navItem" href="./index.html">Inhalt</a><a class="navItem" href="./form.html">Neues Item</a></nav>
     </header>
     <main>
         <h2>Detailansicht</h2>
-        <div>
+        <div class="itemDetails">
           <img src="images/banane-klein.jpg"
           alt="Banane"/>
-            <p>Bezeichnung: Banane</p>
-            <p>Ablaufdatum: 30.03.2022</p>
-            <p>Hinzugefügt am: 10.02.2022</p>
+          <p>Bezeichnung: Banane</p>
+          <p>Ablaufdatum: 30.03.2022</p>
+          <p>Hinzugefügt am: 10.02.2022</p>
+          <button>Löschen</button>
+          <button>Bearbeiten</button>
         </div>
-        <button>Löschen</button>
-        <button>Bearbeiten</button>
     </main>
-    <hr />
     <footer>Seite wurde erstellt von: S. Heintz</footer>
   </body>
 </html>
