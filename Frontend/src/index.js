@@ -1,6 +1,5 @@
 async function displayItems(){
-    await store.readStorage();
-    const items = store.items;
+    const items = await store.getItems();
     const main = document.getElementsByTagName('main')[0]
     for(item of items){
         const a = document.createElement('a');

@@ -1,6 +1,4 @@
 async function displayItem(){
-  await store.readStorage();
-
   let saveButton = document.getElementById("save");
   saveButton.addEventListener("click", save);
   let input = document.getElementsByTagName("input");
@@ -18,19 +16,22 @@ async function displayItem(){
   window.addEventListener("keydown", (event) => 
   {
     if(event.key === "Enter"){
-      save(event);
+      save();
     }
   });
 
   const id = new URLSearchParams(window.location.search).get('id');
-  const item = store.getItem(id);
-  input[2].value = new Date().toLocaleDateString('en-CA');
+  let item;
   if(id){
+    item = await store.getItem(id);
     input[0].value = item.itemName;
     if(item.imageSrc){
       input[1].value = item.imageSrc;
     }
     input[2].value = new Date(item.expiryDate).toLocaleDateString('en-CA');
+  }
+  else {
+    input[2].value = new Date().toLocaleDateString('en-CA');
   }
 }
 

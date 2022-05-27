@@ -1,5 +1,4 @@
 async function displayItem() {
-    await store.readStorage();
     let deleteButton = document.getElementById("delete");
     deleteButton.addEventListener("click", deleteItem);
     function deleteItem(event) {
@@ -15,7 +14,7 @@ async function displayItem() {
 
     const id = new URLSearchParams(window.location.search).get('id');
     const div = document.getElementsByClassName('itemDetails')[0];
-    const item = store.getItem(id);
+    const item = await store.getItem(id);
 
     const nameP = document.createElement('p');
     nameP.textContent = `Bezeichnung: ${item.itemName}`;
