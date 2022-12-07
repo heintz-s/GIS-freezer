@@ -15,11 +15,24 @@ const defaultItems = [{
     expiryDate: new Date(2022, 6, 10),
 },]
 
-const itemsAsJson = localStorage.getItem("freezerItems") || JSON.stringify(defaultItems);
-let items = JSON.parse(itemsAsJson);
+const url = 'http://localhost:3000/';
 
-function updateLocalStorage(){
-    localStorage.setItem("freezerItems", JSON.stringify(items));
+//const itemsAsJson = localStorage.getItem("freezerItems") || JSON.stringify(defaultItems);
+//let items = JSON.parse(itemsAsJson);
+let items = [];
+
+async function readStorage() {
+    const response = await fetch(url+'getItems');
+    const text = await response.text(); // Text aus Response Body
+    items = JSON.parse(text);
+}
+
+async function updateStorage(){
+    //localStorage.setItem("freezerItems", JSON.stringify(items));
+    fetch(url+'setItems', {
+        method: 'post',
+        body: JSON.stringify(items),
+    });
 }
 
 function addItem(newItem){
@@ -31,7 +44,7 @@ function addItem(newItem){
         newItem.id = new Date().valueOf();
         items.push(newItem);
     }
-    updateLocalStorage();
+    updateStorage();
 }
 
 function getItem(id){
@@ -40,5 +53,5 @@ function getItem(id){
 
 function removeItem(id){
     items = items.filter(item => item.id != id);
-    updateLocalStorage();
+    updateStorage();
 }
