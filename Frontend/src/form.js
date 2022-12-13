@@ -1,12 +1,11 @@
 async function showItem(){
-  await readStorage();
   const id = new URLSearchParams(window.location.search).get('id');
 
   let input = document.getElementsByTagName("input");
 
   let saveButton = document.getElementById("save");
   saveButton.addEventListener("click", save);
-  function save() {
+  async function save() {
     const newItem = {
       id: id,
       itemName: input[0].value,
@@ -14,7 +13,7 @@ async function showItem(){
       expiryDate: new Date(input[2].value)
     };
     //console.log(newItem);
-    addItem(newItem);
+    await addItem(newItem);
     //console.log(items);
     window.location = "./index.html"
   }
@@ -29,7 +28,7 @@ async function showItem(){
   //Formular vorausfüllen
   input[2].value = new Date().toLocaleDateString('en-CA');
   if(id){
-    const item = getItem(id);
+    const item = await getItem(id);
     input[0].value = item.itemName;
     if(item.imageSrc){
       input[1].value = item.imageSrc;

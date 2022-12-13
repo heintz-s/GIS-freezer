@@ -1,9 +1,8 @@
 async function showItem(){
-    await readStorage();
     let deleteButton = document.getElementById("delete");
     deleteButton.addEventListener("click", deleteItem);
-    function deleteItem(event) {
-        removeItem(id);
+    async function deleteItem(event) {
+        await removeItem(id);
         window.location = "./index.html";
     }
 
@@ -15,7 +14,7 @@ async function showItem(){
 
     const id = new URLSearchParams(window.location.search).get('id');
     const div = document.getElementsByClassName('itemDetails')[0];
-    const item = getItem(id);
+    const item = await getItem(id);
 
     const nameP = document.createElement('p');
     nameP.textContent = `Bezeichnung: ${item.itemName}`;

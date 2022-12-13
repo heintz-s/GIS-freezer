@@ -1,20 +1,3 @@
-const defaultItems = [{
-    id: 1,
-    itemName: "Banane",
-    expiryDate: new Date(2022, 2, 30),
-    imageSrc: "images/banane-klein.jpg",
-},
-{
-    id: 2,
-    itemName: "Eis",
-    expiryDate: new Date(2022, 6, 10),
-},
-{
-    id: 3,
-    itemName: "Erbsen",
-    expiryDate: new Date(2022, 6, 10),
-},]
-
 const url = 'http://localhost:3000/';
 
 //const itemsAsJson = localStorage.getItem("freezerItems") || JSON.stringify(defaultItems);
@@ -27,31 +10,20 @@ async function readStorage() {
     items = JSON.parse(text);
 }
 
-async function updateStorage(){
-    //localStorage.setItem("freezerItems", JSON.stringify(items));
-    fetch(url+'setItems', {
+async function addItem(newItem){
+    fetch(url+'setItem', {
         method: 'post',
-        body: JSON.stringify(items),
+        body: JSON.stringify(newItem),
     });
 }
 
-function addItem(newItem){
-    if(newItem.id){ // update
-        const index = items.findIndex(item => item.id == newItem.id);
-        items[index] = newItem;
-    }
-    else{ // add
-        newItem.id = new Date().valueOf();
-        items.push(newItem);
-    }
-    updateStorage();
+async function getItem(id){
+    const response = await fetch(url+'getItem?id='+id);
+    const text = await response.text(); // Text aus Response Body
+    item = JSON.parse(text);
+    return item;
 }
 
-function getItem(id){
-    return items.find(item => item.id == id);
-}
-
-function removeItem(id){
-    items = items.filter(item => item.id != id);
-    updateStorage();
+async function removeItem(id){
+    await fetch(url+'removeItem?id='+id);
 }
