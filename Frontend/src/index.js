@@ -3,7 +3,7 @@ async function showItems(){
     const main = document.getElementsByTagName('main')[0]
     for(item of items){
         const a = document.createElement('a');
-        a.href = `details.html?id=${item.id}`; // id an URL anhängen
+        a.href = `details.html?id=${item._id}`; // id an URL anhängen
         const div = document.createElement('div');
         div.className = 'freezerItem';
         if(item.imageSrc){

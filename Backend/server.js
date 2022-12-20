@@ -1,40 +1,60 @@
 const http = require('http');
+const mongodb = require('mongodb');
 
 const hostname = '127.0.0.1'; // localhost
 const port = 3000;
 
+const url = 'mongodb://localhost:27017'; // für lokale MongoDB
+const mongoClient = new mongodb.MongoClient(url);
+
 const defaultItems = [{
-    id: 1,
     itemName: "Banane",
     expiryDate: new Date(2022, 2, 30),
     imageSrc: "images/banane-klein.jpg",
 },
 {
-    id: 2,
     itemName: "Eis",
     expiryDate: new Date(2022, 6, 10),
 },
 {
-    id: 3,
     itemName: "Erbsen",
     expiryDate: new Date(2022, 6, 10),
 },]
 
-let items = defaultItems;
+async function startServer() {
+    // connect to database
+    await mongoClient.connect();
+    // optional: defaultItems einfügen, wenn Collection noch nicht existiert
+    let collections = await mongoClient.db('freezer').listCollections().toArray();
+    if(!collections.find(collection => collection.name == 'item')){
+        mongoClient.db('freezer').collection('item').insertMany(defaultItems);
+    }
+    // listen for requests
+    server.listen(port, hostname, () => {
+        console.log(`Server running at http://${hostname}:${port}/`);
+    });
+}
 
-const server = http.createServer((request, response) => {
+const server = http.createServer(async (request, response) => {
   response.statusCode = 200;
   response.setHeader('Content-Type', 'text/plain');
   response.setHeader('Access-Control-Allow-Origin', '*'); // bei CORS Fehler
   const url = new URL(request.url || '', `http://${request.headers.host}`);
   const id = url.searchParams.get('id');
+  const itemCollection = mongoClient.db('freezer').collection('item');
   switch (url.pathname) {
     case '/getItems':
+        let items = await itemCollection.find({}).toArray();
+        //console.log("getItems", items)
         response.write(JSON.stringify(items));
         break;
     case '/getItem':
         if(id){
-            response.write(JSON.stringify(items.find(item => item.id == id)));
+            let items = await itemCollection.find({
+                _id: new mongodb.ObjectId(id), // von Zahl zu MongoDB ID Objekt konvertieren
+            }).toArray();
+            //console.log("getItem", items[0]);
+            response.write(JSON.stringify(items[0]));
         }
         break;
     case '/setItem':
@@ -45,19 +65,26 @@ const server = http.createServer((request, response) => {
             });
             request.on('end', () => {
                 newItem = JSON.parse(jsonString);
-                if(newItem.id){ // update
-                    const index = items.findIndex(item => item.id == newItem.id);
-                    items[index] = newItem;
+                if(newItem._id){ // update
+                    //console.log("update", newItem);
+                    newItem._id = mongodb.ObjectId(newItem._id); // von Zahl zu MongoDB ID Objekt konvertieren
+                    itemCollection.replaceOne({
+                        _id: newItem._id,
+                    },
+                    newItem);
                 }
                 else{ // add
-                    newItem.id = new Date().valueOf();
-                    items.push(newItem);
+                    //console.log("insert", newItem);
+                    itemCollection.insertOne(newItem);
                 }
             });
         }
     case '/removeItem':
+        //console.log("deleteItem", id);
         if(id){
-            items = items.filter(item => item.id != id);
+            result = await itemCollection.deleteOne({
+                _id: new mongodb.ObjectId(id), // von Zahl zu MongoDB ID Objekt konvertieren
+            });
         }
         break;
     default:
@@ -66,6 +93,5 @@ const server = http.createServer((request, response) => {
   response.end();
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+
+startServer();

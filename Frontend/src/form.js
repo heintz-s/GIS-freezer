@@ -7,7 +7,7 @@ async function showItem(){
   saveButton.addEventListener("click", save);
   async function save() {
     const newItem = {
-      id: id,
+      _id: id,
       itemName: input[0].value,
       imageSrc: input[1].value,
       expiryDate: new Date(input[2].value)
